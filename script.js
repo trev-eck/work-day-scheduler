@@ -1,4 +1,4 @@
-// at the time naming these buttons to the corresponding time made sense but now im extremely annoyed because i cant loop over them.......
+// at the time naming these buttons to the corresponding time made sense but now im extremely annoyed because i cant loop over them easily.......
 var btn1 = $("#btn1");
 var btn2 = $("#btn2");
 var btn3 = $("#btn3");
@@ -8,6 +8,7 @@ var btn9 = $("#btn9");
 var btn10 = $("#btn10");
 var btn11 = $("#btn11");
 var btn12 = $("#btn12");
+var btnX = $(".btn");
 var text1 = $("#text1");
 var text2 = $("#text2");
 var text3 = $("#text3");
@@ -28,7 +29,8 @@ function update() {
 //we need the text areas to show any saved events in local storage if the page gets refreshed
 function updateTextAreas() {
   var savedText = JSON.parse(localStorage.getItem("schedule"));
-  if (savedText != null) {
+  //check to see if there was any data in local storage
+  if (savedText) {
       storedText = savedText;
   }
   text1.val(storedText[4]);
@@ -162,7 +164,9 @@ function changeBackground() {
 
 //the function above works but it makes my head hurt.... after some google searching i figured out how to accomplish the same thing by looping over the elements of class textarea and assigning them a data-state for comparison
 function changeBackgroundV2() {
+  //get the current hour as an integer
   var currentTime = parseInt(moment().format("H"));
+  //loop over all elements with the class textarea, and change their background color in relation to the current time
   for (var i = 0; i < textArea.length; i++) {
     if (textArea[i].dataset.hour < currentTime) {
       textArea[i].className += " past";
@@ -174,12 +178,13 @@ function changeBackgroundV2() {
   }
 }
 
+
+//These are the functions we want to run every time the page loads, start the clock, update text fields with any saved data, and make sure all the backgrounds are the correct color
 setInterval(update, 1000);
 updateTextAreas();
 changeBackgroundV2();
 
-//each of these on click events effectively does the same thing, when you click on the save button it takes the corresponding text and saves it to an array in local storage
-
+//each of these on click events effectively does the same thing, when you click on the save button it takes the corresponding text and places it in to the correct position in an array in local storage
 btn1.on("click", function () {
   storedText[4] = text1.val();
   var savedText = JSON.parse(localStorage.getItem("schedule"));
@@ -270,3 +275,5 @@ btn12.on("click", function () {
     localStorage.setItem("schedule", JSON.stringify(savedText));
   }
 });
+
+// in hindsight it would probably be possible to complete all of the necessary events with a single on click event... think the buttons would need to have a data-state like the text fields in order to select them easily or i would need to rename all of my elements using military time, which i should have done from the start to save myself a LOT of time Could select the sibling of the button and get its value...
